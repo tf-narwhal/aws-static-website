@@ -6,7 +6,7 @@ module "cloudfront" {
   aliases = ["${var.domain}"]
 
   # Set comment, HTTP version, IPv6 support, price class, and retention policy for the CloudFront distribution
-  comment             = var.project_name
+  comment             = var.description
   enabled             = true
   http_version        = "http2and3"
   is_ipv6_enabled     = true

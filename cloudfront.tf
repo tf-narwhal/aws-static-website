@@ -14,6 +14,7 @@ module "cloudfront" {
   retain_on_delete    = false
   wait_for_deployment = false
   default_root_object = "index.html"
+
   # Enable CloudWatch metrics for the CloudFront distribution
   create_monitoring_subscription = true
 
@@ -45,7 +46,7 @@ module "cloudfront" {
   # Set the default cache behavior for the CloudFront distribution
   default_cache_behavior = {
     target_origin_id       = "static_website_root"
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
     compress               = true

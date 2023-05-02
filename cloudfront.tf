@@ -58,10 +58,4 @@ module "cloudfront" {
     acm_certificate_arn = module.acm.acm_certificate_arn
     ssl_support_method  = "sni-only"
   }
-
-  # Set the geographic restrictions for the CloudFront distribution
-  geo_restriction = {
-    restriction_type = "whitelist"
-    locations        = ["NO", "UA", "US", "GB"]
-  }
 }

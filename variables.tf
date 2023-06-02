@@ -18,3 +18,9 @@ variable "role_arns" {
   type        = list(string)
   default     = []
 }
+
+variable "additional_aliases" {
+  description = "Additional aliases for the CloudFront distribution"
+  type        = list(string)
+  default     = []
+}

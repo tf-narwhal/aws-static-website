@@ -3,7 +3,7 @@ module "cloudfront" {
   source = "terraform-aws-modules/cloudfront/aws"
 
   # Set aliases for the CloudFront distribution
-  aliases = ["${var.domain}"]
+  aliases = concat(["${var.domain}"], var.additional_aliases)
 
   # Set comment, HTTP version, IPv6 support, price class, and retention policy for the CloudFront distribution
   comment             = var.description

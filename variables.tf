@@ -24,3 +24,9 @@ variable "additional_aliases" {
   type        = list(string)
   default     = []
 }
+
+variable "error_document" {
+  description = "HTML error document to be used"
+  type        = string
+  default     = "error.html"
+}

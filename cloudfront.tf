@@ -13,7 +13,7 @@ module "cloudfront" {
   price_class         = "PriceClass_All"
   retain_on_delete    = false
   wait_for_deployment = false
-  default_root_object = "index.html"
+  #default_root_object = "index.html"
 
   # Enable CloudWatch metrics for the CloudFront distribution
   create_monitoring_subscription = true
@@ -24,22 +24,32 @@ module "cloudfront" {
     s3_bucket_one = "${var.project_name} can access"
   }
 
-  # Create an origin access control for the CloudFront distribution
-  create_origin_access_control = true
-  origin_access_control = {
-    static_website_root = {
-      description      = "CloudFront access to S3"
-      origin_type      = "s3"
-      signing_behavior = "always"
-      signing_protocol = "sigv4"
-    }
-  }
+  # # Create an origin access control for the CloudFront distribution
+  # create_origin_access_control = true
+  # origin_access_control = {
+  #   static_website_root = {
+  #     description      = "CloudFront access to S3"
+  #     origin_type      = "s3"
+  #     signing_behavior = "always"
+  #     signing_protocol = "sigv4"
+  #   }
+  # }
 
   # Set the origin for the CloudFront distribution
   origin = {
     static_website_root = {
-      domain_name           = module.s3_static_website.s3_bucket_bucket_regional_domain_name
-      origin_access_control = "static_website_root" # key in `origin_access_control`
+      domain_name = module.s3_static_website.s3_bucket_website_endpoint
+      custom_origin_config = {
+        http_port              = 80
+        https_port             = 443
+        origin_protocol_policy = "http-only"
+        origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
+      }
+
+      origin_shield = {
+        enabled              = true
+        origin_shield_region = "us-east-1"
+      }
     }
   }
 

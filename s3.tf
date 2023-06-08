@@ -5,6 +5,49 @@ module "s3_static_website" {
 
   bucket        = "${var.domain}-${module.tools.account_id}"
   force_destroy = true
+
+  control_object_ownership  = true
+  object_ownership          = "BucketOwnerPreferred"
+  #acl                       = "public-read"
+
+  # S3 bucket-level Public Access Block configuration (by default now AWS has made this default as true for S3 bucket-level block public access)
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+
+  logging = {
+    target_bucket = module.log_bucket.s3_bucket_id
+    target_prefix = "${var.domain}/"
+  }
+
+  # versioning = {
+  #   status     = true
+  # }
+
+  website = {
+    index_document = "index.html"
+    error_document = var.error_document
+  }
+}
+
+module "log_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 3.0"
+
+  bucket        = "${var.domain}-logs-${module.tools.account_id}"
+  force_destroy = true
+
+  control_object_ownership = true
+
+  attach_elb_log_delivery_policy        = true
+  attach_lb_log_delivery_policy         = true
+  attach_access_log_delivery_policy     = true
+  attach_deny_insecure_transport_policy = true
+  attach_require_latest_tls_policy      = true
+
+  access_log_delivery_policy_source_accounts = [module.tools.account_id]
+  access_log_delivery_policy_source_buckets  = ["arn:aws:s3:::${var.domain}-${module.tools.account_id}"]
 }
 
 # Set the S3 bucket policy to allow access from the CloudFront distribution
